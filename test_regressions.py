@@ -45,11 +45,25 @@ with tempfile.TemporaryDirectory() as td:
         LAN_MIN_FREE_GIB='1'
     )
 
-    proc = subprocess.Popen(
-        [sys.executable, str(root / 'server.py')],
-        env=env,
-        stdout=subprocess.DEVNULL
-    )
+    def start_server():
+        return subprocess.Popen(
+            [sys.executable, str(root / 'server.py')],
+            cwd=str(root),
+            env=env,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+
+    def stop_server(proc):
+        if proc.poll() is None:
+            proc.terminate()
+            try:
+                proc.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                proc.wait(timeout=10)
+        else:
+            proc.wait()
 
     def req(path, obj=None, token=None, raw=None):
         data = (
@@ -85,6 +99,8 @@ with tempfile.TemporaryDirectory() as td:
         raise AssertionError(
             'Request unexpectedly accepted'
         )
+
+    proc = start_server()
 
     try:
         for _ in range(150):
@@ -183,10 +199,7 @@ with tempfile.TemporaryDirectory() as td:
             {'upload_id': first}, b
         )
 
-        req(
-            '/upload/cancel',
-            {'upload_id': first}, a
-        )
+        req('/upload/cancel', {'upload_id': first}, a)
 
         assert req('/storage', token=a)['used_bytes'] == 0
 
@@ -218,10 +231,7 @@ with tempfile.TemporaryDirectory() as td:
             {'upload_id': ident, 'sha256': 'bad'}, a
         )
 
-        req(
-            '/upload/finish',
-            {'upload_id': ident}, a
-        )
+        req('/upload/finish', {'upload_id': ident}, a)
 
         fid = req('/state', token=b)['files'][0]['id']
 
@@ -234,20 +244,14 @@ with tempfile.TemporaryDirectory() as td:
         with sqlite3.connect(
             root / 'server_data/lan.db'
         ) as db:
-            db.execute(
-                'UPDATE files SET expires=0'
-            )
+            db.execute('UPDATE files SET expires=0')
 
         assert req('/storage', token=a)['used_bytes'] == 3
 
-        proc.terminate()
-        proc.wait(5)
+        stop_server(proc)
+        proc = None
 
-        proc = subprocess.Popen(
-            [sys.executable, str(root / 'server.py')],
-            env=env,
-            stdout=subprocess.DEVNULL
-        )
+        proc = start_server()
 
         for _ in range(150):
             if proc.poll() is not None:
@@ -286,5 +290,5 @@ with tempfile.TemporaryDirectory() as td:
         )
 
     finally:
-        proc.terminate()
-        proc.wait(5)
+        if proc is not None:
+            stop_server(proc)
