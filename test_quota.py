@@ -4,7 +4,16 @@ from pathlib import Path
 src=Path(__file__).resolve().parent
 with tempfile.TemporaryDirectory() as td:
  (Path(td)/'live.py').write_bytes((src/'live.py').read_bytes())
- server=Path(td)/'server.py';server.write_text((src/'server.py').read_text().replace("if __name__=='__main__':","shutil.disk_usage=lambda path: type('Disk',(),{'free':100*1024**3})()\nif __name__=='__main__':"))
+ 
+server = Path(td) / 'server.py'
+server.write_text(
+    (src / 'server.py').read_text(encoding='utf-8').replace(
+        "if __name__=='__main__':",
+        "shutil.disk_usage=lambda path: type('Disk',(),{'free':100*1024**3})()\nif __name__=='__main__':"
+    ),
+    encoding='utf-8'
+)
+
  sock=socket.socket();sock.bind(('127.0.0.1',0));port=sock.getsockname()[1];sock.close()
  env=dict(os.environ,LAN_HOST='127.0.0.1',LAN_PORT=str(port),LAN_STORAGE_GIB='5',LAN_MIN_FREE_GIB='1')
  p=subprocess.Popen([sys.executable,str(server)],cwd=td,env=env,stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
