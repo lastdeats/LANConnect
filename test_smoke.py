@@ -38,6 +38,13 @@ with tempfile.TemporaryDirectory() as td:
   except urllib.error.HTTPError as e:assert e.code==410
   print('PASS: 2 accounts, message, chunk upload, checksum, full and resumed download, expiry enforcement')
  finally:
-  p.terminate()
-  try:p.wait(timeout=5)
-  except subprocess.TimeoutExpired:p.kill()
+  if p.poll() is None:
+   p.terminate()
+   try:
+    p.wait(timeout=10)
+   except subprocess.TimeoutExpired:
+    p.kill()
+    p.wait(timeout=10)
+  if p.stderr:
+   p.stderr.close()
+   
