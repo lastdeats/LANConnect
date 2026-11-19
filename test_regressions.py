@@ -241,10 +241,12 @@ with tempfile.TemporaryDirectory() as td:
             token=c
         )
 
-        with sqlite3.connect(
-            root / 'server_data/lan.db'
-        ) as db:
+        db = sqlite3.connect(root / 'server_data/lan.db')
+        try:
             db.execute('UPDATE files SET expires=0')
+            db.commit()
+        finally:
+            db.close()
 
         assert req('/storage', token=a)['used_bytes'] == 3
 
