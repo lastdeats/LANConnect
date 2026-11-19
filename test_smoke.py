@@ -38,7 +38,6 @@ with tempfile.TemporaryDirectory() as td:
   except urllib.error.HTTPError as e:assert e.code==410
   print('PASS: 2 accounts, message, chunk upload, checksum, full and resumed download, expiry enforcement')
  finally:
-  # Windows cannot remove lan.db until the child server exits and closes SQLite.
   if p.poll() is None:
    p.terminate()
    try:
@@ -46,3 +45,9 @@ with tempfile.TemporaryDirectory() as td:
    except subprocess.TimeoutExpired:
     p.kill()
     p.wait(timeout=10)
+
+  if p.stderr:
+   p.stderr.close()
+
+  # Wait for Windows to release SQLite database handles.
+  time.sleep(2)
