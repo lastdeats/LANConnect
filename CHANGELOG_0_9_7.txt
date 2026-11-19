@@ -1,0 +1,4 @@
+LAN Connect 0.9.7
+- Full 13-scenario suite with TLS and Android JVM passed on 2026-11-19 (34.0 seconds) on Linux.
+- Added --report-json to run_tests.py for machine-readable per-scenario results including failures and timeouts.
+- No Windows EXE or Android APK built; no hardware validation.

@@ -1,0 +1,5 @@
+LAN Connect 0.9.6 — diagnostic maintenance release
+- Added flush-enabled progress stages to packaged-server integration test to locate intermittent stalls.
+- Verified test_packaged_server.py --source --tls-source passes in isolation.
+- Full extended suite has NOT been certified; preceding 12 scenarios passed in the latest run, but final packaged-server scenario stalled.
+- Windows EXE and Android APK have NOT been built or device-tested.

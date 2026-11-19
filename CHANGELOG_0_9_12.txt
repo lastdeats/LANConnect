@@ -1,0 +1,5 @@
+LAN Connect 0.9.12 — test-network shutdown refinement
+- Use a short polling interval for temporary HTTP servers in test_network.py.
+- Shut down and close temporary HTTP servers separately.
+- Confirmed test_network.py and Android JVM compatibility test pass individually.
+- Full suite, Windows EXE and Android APK are NOT verified in this revision.

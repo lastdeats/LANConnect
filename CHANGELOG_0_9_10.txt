@@ -1,0 +1,5 @@
+LAN Connect 0.9.10 — test reliability patch
+- Android JVM compatibility test now has independent 45-second compilation and 30-second execution limits.
+- Explicit stage diagnostics added to the Android JVM test.
+- The comprehensive packaged-server test still stalls at TLS certificate generation/restart when run after other tests in this environment. This is NOT a passing full suite.
+- No Windows EXE or Android APK built or hardware-verified.

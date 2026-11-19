@@ -1,0 +1,42 @@
+{
+  "passed": 6,
+  "failed": 0,
+  "running": 1,
+  "tests": [
+    {
+      "name": "test_packaged_server.py",
+      "status": "passed",
+      "seconds": 14.05
+    },
+    {
+      "name": "test_smoke.py",
+      "status": "passed",
+      "seconds": 3.9
+    },
+    {
+      "name": "test_quota.py",
+      "status": "passed",
+      "seconds": 3.4
+    },
+    {
+      "name": "test_remote.py",
+      "status": "passed",
+      "seconds": 4.01
+    },
+    {
+      "name": "test_regressions.py",
+      "status": "passed",
+      "seconds": 5.27
+    },
+    {
+      "name": "test_live.py",
+      "status": "passed",
+      "seconds": 2.48
+    },
+    {
+      "name": "test_network.py",
+      "status": "running",
+      "seconds": 0
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+
+0.9.4: strengthened startup and restart readiness checks in test_regressions.py. Main 11-test suite passed before patch; patched regression test passed independently. Extended suite reached packaged server but timed out externally; no full-pass claim.

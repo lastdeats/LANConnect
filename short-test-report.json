@@ -1,0 +1,12 @@
+{
+  "passed": 0,
+  "failed": 1,
+  "running": 0,
+  "tests": [
+    {
+      "name": "test_smoke.py",
+      "status": "timeout",
+      "seconds": 1.01
+    }
+  ]
+}
