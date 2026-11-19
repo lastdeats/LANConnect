@@ -2,7 +2,7 @@
 import os,sys,tempfile,subprocess,time,json,urllib.request,urllib.error,socket,hashlib,sqlite3
 from pathlib import Path
 src=Path(__file__).resolve().parent
-with tempfile.TemporaryDirectory() as td:
+with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as td:
  (Path(td)/'live.py').write_bytes((src/'live.py').read_bytes())
  server=Path(td)/'server.py';server.write_bytes((src/'server.py').read_bytes())
  sock=socket.socket();sock.bind(('127.0.0.1',0));port=sock.getsockname()[1];sock.close()
