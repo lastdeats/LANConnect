@@ -1,0 +1,64 @@
+
+name: LAN Connect Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          if (Test-Path requirements-windows.txt) {
+            pip install -r requirements-windows.txt
+          }
+          pip install pyinstaller
+
+      - name: Build Windows EXE
+        run: python build_windows.py
+
+      - name: Upload Windows files
+        uses: actions/upload-artifact@v4
+        with:
+          name: LANConnect-Windows
+          path: dist/
+          if-no-files-found: error
+
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Build Android APK
+        run: python3 build_android.py
+
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: LANConnect-Android
+          path: '**/*.apk'
+          if-no-files-found: error
+          
