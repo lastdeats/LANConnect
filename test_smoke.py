@@ -7,7 +7,7 @@ with tempfile.TemporaryDirectory() as td:
  server=Path(td)/'server.py';server.write_bytes((src/'server.py').read_bytes())
  sock=socket.socket();sock.bind(('127.0.0.1',0));port=sock.getsockname()[1];sock.close()
  env=dict(os.environ,LAN_HOST='127.0.0.1',LAN_PORT=str(port),LAN_MIN_FREE_GIB='1')
- p=subprocess.Popen([sys.executable,str(server)],cwd=td,env=env,stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+ p=subprocess.Popen([sys.executable,str(server)],cwd=td,env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
  def req(path,obj=None,token=None,raw=None):
   data=raw if raw is not None else (json.dumps(obj).encode() if obj is not None else None)
   headers={'Authorization':'Bearer '+token} if token else {}
@@ -38,6 +38,7 @@ with tempfile.TemporaryDirectory() as td:
   except urllib.error.HTTPError as e:assert e.code==410
   print('PASS: 2 accounts, message, chunk upload, checksum, full and resumed download, expiry enforcement')
  finally:
+  # Windows cannot remove lan.db until the child server exits and closes SQLite.
   if p.poll() is None:
    p.terminate()
    try:
@@ -45,6 +46,3 @@ with tempfile.TemporaryDirectory() as td:
    except subprocess.TimeoutExpired:
     p.kill()
     p.wait(timeout=10)
-  if p.stderr:
-   p.stderr.close()
-   
